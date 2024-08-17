@@ -1,0 +1,45 @@
+def dom(arr):
+    x_cnt = arr.count('x')
+    o_cnt = arr.count('o')
+
+    if x_cnt == 3 or o_cnt == 3:
+        return 100
+
+    if x_cnt > 0 and o_cnt == 0:
+        return 0
+
+    return max(x_cnt, o_cnt)
+
+def strength(brd):
+    x_ttl_dom  = 0
+    o_ttl_dom  = 0
+    for row in brd:
+        x_ttl_dom += dom(row)
+        o_ttl_dom  += dom(['o' if cell == 'x' else 'x' if cell == 'o' else 'b' for cell in row])
+    for col in range(3):
+        colmn = [brd[row][col] for row in range(3)]
+        x_ttl_dom  += dom(colmn)
+        o_ttl_dom  += dom(['o' if cell == 'x' else 'x' if cell == 'o' else 'b' for cell in colmn])
+    D1 = [brd[i][i] for i in range(3)]
+    D2 = [brd[i][2 - i] for i in range(3)]
+
+    x_ttl_dom  += dom(D1)
+    o_ttl_dom  += dom(['o' if cell == 'x' else 'x' if cell == 'o' else 'b' for cell in D1])
+
+    x_ttl_dom += dom(D2)
+    o_ttl_dom += dom(['o' if cell == 'x' else 'x' if cell == 'o' else 'b' for cell in D2])
+    x_strength = x_ttl_dom - o_ttl_dom
+    o_strength = o_ttl_dom - x_ttl_dom
+
+    return x_strength, o_strength
+
+# Example usage:
+board_position = [
+    ['x', 'b', 'o'],
+    ['x', 'o', 'o'],
+    ['o', 'o', 'x']
+]
+
+x_strength, o_strength = strength(board_position)
+print(f"Strength of 'x': {x_strength}")
+print(f"Strength of 'o': {o_strength}")
